@@ -21,7 +21,9 @@ public class MaClasse implements UserServiceInjectable, PostServiceInjectable {
 	}
 
 	public void run() {
+		System.out.print("MaClasse demande à afficher son userService: ");
 		userService.doThis();
+		System.out.print("MaClasse demande à afficher son postService: ");
 		postService.doThat();
 	}
 

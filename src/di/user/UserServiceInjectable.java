@@ -1,6 +1,8 @@
 package di.user;
 
-public interface UserServiceInjectable {
+import di.Injectable;
+
+public interface UserServiceInjectable extends Injectable {
 
 	void setUserService(UserService userService);
 

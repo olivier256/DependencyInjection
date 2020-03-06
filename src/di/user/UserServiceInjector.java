@@ -13,7 +13,7 @@ public class UserServiceInjector implements Injector {
 
 	@Override
 	public void inject() {
-		for (Object instance : dependencyInjector.getRegisteredInstances()) {
+		for (Object instance : dependencyInjector.getRegisteredInstancesByClass(UserServiceInjectable.class)) {
 			if (instance instanceof UserServiceInjectable) {
 				((UserServiceInjectable) instance).setUserService(dependencyInjector.getUserService());
 			}

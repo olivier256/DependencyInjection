@@ -4,7 +4,7 @@ public class MockPostService implements PostService {
 
 	@Override
 	public void doThat() {
-		System.out.println("MockPostService does that");
+		System.out.println("MockPostService does that (@" + Integer.toHexString(hashCode()) + ")");
 	}
 
 }

@@ -1,6 +1,8 @@
 package di.post;
 
-public interface PostServiceInjectable {
+import di.Injectable;
+
+public interface PostServiceInjectable extends Injectable {
 
 	void setPostService(PostService postService);
 

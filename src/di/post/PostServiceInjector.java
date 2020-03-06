@@ -13,10 +13,8 @@ public class PostServiceInjector implements Injector {
 
 	@Override
 	public void inject() {
-		for (Object instance : dependencyInjector.getRegisteredInstances()) {
-			if (instance instanceof PostServiceInjectable) {
-				((PostServiceInjectable) instance).setPostService(dependencyInjector.getPostService());
-			}
+		for (Object instance : dependencyInjector.getRegisteredInstancesByClass(PostServiceInjectable.class)) {
+			((PostServiceInjectable) instance).setPostService(dependencyInjector.getPostService());
 		}
 	}
 

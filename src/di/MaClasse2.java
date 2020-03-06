@@ -7,12 +7,14 @@ public class MaClasse2 implements PostServiceInjectable {
 
 	private PostService postService;
 
-	public void run() {
-		postService.doThat();
-	}
-
 	@Override
 	public void setPostService(PostService postService) {
 		this.postService = postService;
 	}
+
+	public void run() {
+		System.out.print("MaClasse2 demande à afficher son postService: ");
+		postService.doThat();
+	}
+
 }
