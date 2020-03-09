@@ -1,6 +1,8 @@
 package di.user;
 
-public interface UserService {
+import di.Service;
+
+public interface UserService extends Service {
 
 	void doThis();
 

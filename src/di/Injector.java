@@ -1,6 +1,6 @@
 package di;
 
 public interface Injector {
-	void inject();
+	void inject(Service service);
 
 }

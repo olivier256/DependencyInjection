@@ -4,84 +4,57 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import di.post.MockPostService;
-import di.post.PostService;
-import di.post.PostServiceInjectable;
-import di.user.MockUserService;
-import di.user.UserService;
-import di.user.UserServiceInjectable;
+import java.util.Map.Entry;
 
 public class DependencyInjector {
 	private List<Injector> injectors;
 
-	private Map<Class<? extends Injectable>, List<? extends Injectable>> registeredInstancesByClass;
+	private Map<Class<? extends Injectable>, List<Injectable>> registeredInstances;
 
-	private UserService userService;
+	private Map<Class<? extends Injectable>, Service> mapInjectableService;
 
-	private PostService postService;
+	private Map<Injector, Class<? extends Injectable>> mapInjectorInjectable;
 
 	public DependencyInjector() {
 		injectors = new ArrayList<>();
-		registeredInstancesByClass = new HashMap<>();
-		userService = new MockUserService();
-		postService = new MockPostService();
+		registeredInstances = new HashMap<>();
+		mapInjectableService = new HashMap<>();
+		mapInjectorInjectable = new HashMap<>();
 	}
 
-	public void addInjector(Injector injector) {
+	public void addInjector(final Injector injector, final Class<? extends Injectable> injectable) {
 		injectors.add(injector);
+		registeredInstances.put(injectable, new ArrayList<Injectable>());
+		mapInjectorInjectable.put(injector, injectable);
 	}
 
-	public void register(Object instance) {
-		for (Class<?> _interface : instance.getClass().getInterfaces()) {
-			if (_interface.equals(UserServiceInjectable.class)) {
-				registerToUserServiceInjection(instance);
+	public void register(final Injectable instance) {
+		for (Entry<Class<? extends Injectable>, List<Injectable>> entry : registeredInstances.entrySet()) {
+			Class<? extends Injectable> interfaceEnregistree = entry.getKey();
+			for (Class<?> interfaceDeLInstance : instance.getClass().getInterfaces()) {
+				if (interfaceDeLInstance.equals(interfaceEnregistree)) {
+					List<Injectable> list = entry.getValue();
+					list.add(instance);
+					entry.setValue(list);
+				}
 			}
-
-			if (_interface.equals(PostServiceInjectable.class)) {
-				registerToPostServiceInjection(instance);
-			}
 		}
 	}
 
-	private void registerToUserServiceInjection(Object instance) {
-		Class<UserServiceInjectable> userServiceInjectableClass = UserServiceInjectable.class;
-		List<UserServiceInjectable> list = (List<UserServiceInjectable>) registeredInstancesByClass
-				.get(userServiceInjectableClass);
-		if (list == null) {
-			list = new ArrayList<>();
-			registeredInstancesByClass.put(userServiceInjectableClass, list);
-		}
-		list.add((UserServiceInjectable) instance);
-	}
-
-	private void registerToPostServiceInjection(Object instance) {
-		Class<PostServiceInjectable> postServiceInjectableClass = PostServiceInjectable.class;
-		List<PostServiceInjectable> list = (List<PostServiceInjectable>) registeredInstancesByClass
-				.get(postServiceInjectableClass);
-		if (list == null) {
-			list = new ArrayList<>();
-			registeredInstancesByClass.put(postServiceInjectableClass, list);
-		}
-		list.add((PostServiceInjectable) instance);
+	public void addRuntimeInstance(final Class<? extends Injectable> injectable, final Service service) {
+		mapInjectableService.put(injectable, service);
 	}
 
 	public void inject() {
 		for (Injector injector : injectors) {
-			injector.inject();
+			Class<? extends Injectable> injectable = mapInjectorInjectable.get(injector);
+			Service service = mapInjectableService.get(injectable);
+			injector.inject(service);
 		}
 	}
 
-	public List<? extends Injectable> getRegisteredInstancesByClass(Class<? extends Injectable> _class) {
-		return registeredInstancesByClass.get(_class);
-	}
-
-	public UserService getUserService() {
-		return userService;
-	}
-
-	public PostService getPostService() {
-		return postService;
+	public List<Injectable> getInstancesByClass(final Class<? extends Injectable> injectable) {
+		return registeredInstances.get(injectable);
 	}
 
 }

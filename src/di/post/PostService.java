@@ -1,6 +1,8 @@
 package di.post;
 
-public interface PostService {
+import di.Service;
+
+public interface PostService extends Service {
 
 	void doThat();
 
